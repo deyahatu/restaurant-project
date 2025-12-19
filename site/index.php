@@ -1,10 +1,9 @@
 <?php
 
-$host = 'db'; 
+$host = 'localhost';
 $dbname = 'dictionary';
-$username = 'root'; 
-$password = 'password'; 
-
+$username = 'root';
+$password = '';
 
 $conn = new mysqli($host, $username, $password, $dbname);
 
@@ -18,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "SELECT definition FROM words WHERE word = '$word'";
     $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
+    if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $definition = $row['definition'];
     } else {
@@ -28,6 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
