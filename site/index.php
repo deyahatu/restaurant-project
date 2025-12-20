@@ -1,25 +1,26 @@
 <?php
-$host = 'localhost';
-$dbname = 'restaurant';
-$username = 'root';
-$password = '';
+$host = "localhost";
+$dbname = "restaurant";
+$username = "restaurant_user";
+$password = "123456";
 
 $conn = new mysqli($host, $username, $password, $dbname);
 if ($conn->connect_error) {
-    die("Connection failed");
+    die("Connection failed: " . $conn->connect_error);
 }
 
 $resultText = "";
 $options = "";
 
+/* جلب الوجبات للقائمة */
 $res = $conn->query("SELECT DISTINCT meal FROM menu");
 while ($row = $res->fetch_assoc()) {
     $meal = htmlspecialchars($row['meal']);
     $options .= "<option value='$meal'>$meal</option>";
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $meal = "";
+/* عند الإرسال */
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (!empty($_POST['typed_meal'])) {
         $meal = $conn->real_escape_string($_POST['typed_meal']);
@@ -27,15 +28,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $meal = $conn->real_escape_string($_POST['selected_meal']);
     }
 
-    $q = $conn->query("SELECT restaurant FROM menu WHERE meal='$meal' LIMIT 1");
+    $q = $conn->query(
+        "SELECT restaurant FROM menu WHERE meal='$meal' LIMIT 1"
+    );
 
     if ($q && $q->num_rows > 0) {
         $r = $q->fetch_assoc();
-        $resultText = "Recommended restaurant: <b>{$r['restaurant']}</b>";
+        $resultText = "🍽️ Recommended restaurant: <b>" .
+            htmlspecialchars($r['restaurant']) . "</b>";
     } else {
-        $resultText = "No restaurant found for this meal.";
+        $resultText = "❌ No restaurant found for this meal.";
     }
 }
+
 $conn->close();
 ?>
 
@@ -97,22 +102,21 @@ $conn->close();
 </head>
 
 <body>
-    <div class="card">
-        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80">
-        <h2>Find Your Restaurant</h2>
+<div class="card">
+    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80">
+    <h2>Find Your Restaurant</h2>
 
-        <form method="post">
-            <input name="typed_meal" placeholder="Type meal (optional)">
-            <select name="selected_meal">
-                <?php echo $options; ?>
-            </select>
-            <br>
-            <button type="submit">Recommend 🍽️</button>
-        </form>
+    <form method="post">
+        <input name="typed_meal" placeholder="Type meal (optional)">
+        <select name="selected_meal">
+            <?= $options ?>
+        </select>
+        <br>
+        <button type="submit">Recommend 🍽️</button>
+    </form>
 
-        <div class="result">
-            <?php echo $resultText; ?>
-        </div>
-    </div>
+    <div class="result"><?= $resultText ?></div>
+</div>
 </body>
 </html>
+
