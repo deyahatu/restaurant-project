@@ -88,7 +88,7 @@ $conn->close();
             border: none;
             border-radius: 8px;
             background-color: #ff7a18;
-            color: green;
+            color: black;
             font-size: 16px;
             cursor: pointer;
         }
