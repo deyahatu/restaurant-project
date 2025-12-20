@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.40, for Linux (x86_64)
 --
--- Host: localhost    Database: dictionary
+-- Host: localhost    Database: restaurant
 -- ------------------------------------------------------
 -- Server version	8.0.40-0ubuntu0.24.04.1
 
@@ -16,28 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `words`
+-- Table structure for table `menu`
 --
 
-DROP TABLE IF EXISTS `words`;
+DROP TABLE IF EXISTS `menu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `words` (
+CREATE TABLE `menu` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `word` varchar(100) DEFAULT NULL,
-  `definition` text,
+  `meal` varchar(100) DEFAULT NULL,
+  `restaurant` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `words`
+-- Dumping data for table `menu`
 --
 
-LOCK TABLES `words` WRITE;
-/*!40000 ALTER TABLE `words` DISABLE KEYS */;
-INSERT INTO `words` VALUES (1,'apple','A fruit that is typically red, green, or yellow.'),(2,'banana','A long curved fruit that grows in clusters and has soft pulpy flesh and yellow skin when ripe.'),(3,'cherry','A small, round fruit that is typically red or black.'),(4,'date','The sweet fruit of the date palm, often eaten dried.'),(5,'elderberry','A small dark purple fruit that grows in clusters on the elder tree.');
-/*!40000 ALTER TABLE `words` ENABLE KEYS */;
+LOCK TABLES `menu` WRITE;
+/*!40000 ALTER TABLE `menu` DISABLE KEYS */;
+INSERT INTO `menu` VALUES
+(1,'pizza','Pizza House'),
+(2,'burger','Burger Town'),
+(3,'shawarma','Shawarma King'),
+(4,'pasta','Italiano');
+/*!40000 ALTER TABLE `menu` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

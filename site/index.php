@@ -1,141 +1,117 @@
 <?php
-
 $host = 'localhost';
-$dbname = 'dictionary';
+$dbname = 'restaurant';
 $username = 'root';
 $password = '';
 
 $conn = new mysqli($host, $username, $password, $dbname);
-
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Connection failed");
 }
 
-$definition = '';
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $word = $conn->real_escape_string(trim($_POST['word']));
-    $sql = "SELECT definition FROM words WHERE word = '$word'";
-    $result = $conn->query($sql);
+$resultText = "";
+$options = "";
 
-    if ($result && $result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $definition = $row['definition'];
+$res = $conn->query("SELECT DISTINCT meal FROM menu");
+while ($row = $res->fetch_assoc()) {
+    $meal = htmlspecialchars($row['meal']);
+    $options .= "<option value='$meal'>$meal</option>";
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $meal = "";
+
+    if (!empty($_POST['typed_meal'])) {
+        $meal = $conn->real_escape_string($_POST['typed_meal']);
     } else {
-        $definition = "Word not found.";
+        $meal = $conn->real_escape_string($_POST['selected_meal']);
+    }
+
+    $q = $conn->query("SELECT restaurant FROM menu WHERE meal='$meal' LIMIT 1");
+
+    if ($q && $q->num_rows > 0) {
+        $r = $q->fetch_assoc();
+        $resultText = "Recommended restaurant: <b>{$r['restaurant']}</b>";
+    } else {
+        $resultText = "No restaurant found for this meal.";
     }
 }
-
 $conn->close();
 ?>
 
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Dictionary</title>
+    <title>Food Recommendation</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-
         body {
-            font-family: 'Inter', sans-serif;
-            background: #eaf6ff; 
-            color: #333;
             margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #ffecd2, #fcb69f);
+            height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            align-items: center;
         }
 
-        .container {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
-            border-radius: 16px;
-            padding: 40px 50px;
-            max-width: 450px;
-            width: 90%;
+        .card {
+            background: white;
+            width: 420px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
             text-align: center;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #1a3d6c; 
-        }
-
-        p.description {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            color: #1a5276; 
-        }
-
-        input[type="text"] {
-            padding: 14px 16px;
+        img {
             width: 100%;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            width: 80%;
+            padding: 10px;
             border-radius: 8px;
-            font-size: 1rem;
-            background: #f9fcff;
-            color: #333;
-            outline: none;
-            transition: border-color 0.3s ease, background 0.3s ease;
+            font-size: 16px;
+            margin-top: 10px;
         }
 
-        input[type="text"]:focus {
-            border-color: #1a5276; 
-            background: #eaf6ff;
-        }
-
-        input[type="submit"] {
-            padding: 14px 20px;
-            background-color: #1a5276;
-            color: #fff;
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
+            background-color: #ff7a18;
+            color: white;
+            font-size: 16px;
             cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: transform 0.3s ease, background-color 0.3s ease;
         }
 
-        input[type="submit"]:hover {
-            background-color: #14517a;
-            transform: scale(1.05);
-        }
-
-        .definition {
+        .result {
             margin-top: 20px;
-            font-size: 1.1rem;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 8px;
-            color: #333;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .definition p {
-            margin: 0;
-            font-weight: 500;
+            font-size: 18px;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Our Dictionary test</h1>
-        <p class="description">Quickly find definitions of any word in a clean and modern interface.</p>
-    <p></p>
+    <div class="card">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80">
+        <h2>Find Your Restaurant</h2>
+
         <form method="post">
-            <input type="text" name="word" placeholder="Enter a word" required>
-            <input type="submit" value="Search">
+            <input name="typed_meal" placeholder="Type meal (optional)">
+            <select name="selected_meal">
+                <?php echo $options; ?>
+            </select>
+            <br>
+            <button type="submit">Recommend 🍽️</button>
         </form>
-        <div class="definition">
-            <?php if ($definition): ?>
-                <p><?php echo $definition; ?></p>
-            <?php endif; ?>
+
+        <div class="result">
+            <?php echo $resultText; ?>
         </div>
     </div>
 </body>
