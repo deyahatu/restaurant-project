@@ -103,7 +103,7 @@ $conn->close();
 <body>
 <div class="card">
     <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80">
-    <h2>Find Your Restaurant</h2>
+    <h2>Your Restaurant</h2>
 
     <form method="post">
         <input name="typed_meal" placeholder="Type meal (optional)">
