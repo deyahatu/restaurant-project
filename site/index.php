@@ -12,14 +12,13 @@ if ($conn->connect_error) {
 $resultText = "";
 $options = "";
 
-/* جلب الوجبات للقائمة */
 $res = $conn->query("SELECT DISTINCT meal FROM menu");
 while ($row = $res->fetch_assoc()) {
     $meal = htmlspecialchars($row['meal']);
     $options .= "<option value='$meal'>$meal</option>";
 }
 
-/* عند الإرسال */
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (!empty($_POST['typed_meal'])) {
@@ -89,7 +88,7 @@ $conn->close();
             border: none;
             border-radius: 8px;
             background-color: #ff7a18;
-            color: white;
+            color: black;
             font-size: 16px;
             cursor: pointer;
         }
