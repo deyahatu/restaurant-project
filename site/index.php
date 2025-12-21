@@ -1,10 +1,10 @@
 <?php
-$host = "localhost";
-$dbname = "restaurant";
-$username = "restaurant_user";
-$password = "123456";
+$host = getenv('DB_HOST') ?: 'db';
+$user = getenv('DB_USER') ?: 'restaurant_user';
+$pass = getenv('DB_PASS') ?: '123456';
+$name = getenv('DB_NAME') ?: 'restaurant';
 
-$conn = new mysqli($host, $username, $password, $dbname);
+$conn = new mysqli($host, $user, $pass, $name);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }

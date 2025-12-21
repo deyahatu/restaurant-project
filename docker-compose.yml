@@ -4,22 +4,32 @@ services:
     ports:
       - "8081:80"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DB_HOST: db
-      DB_USER: appuser
-      DB_PASS: apppass
-      DB_NAME: appdb
+      DB_USER: restaurant_user
+      DB_PASS: "123456"
+      DB_NAME: restaurant
+    restart: unless-stopped
 
   db:
     image: mysql:8.0
     environment:
-      MYSQL_DATABASE: appdb
-      MYSQL_USER: appuser
-      MYSQL_PASSWORD: apppass
+      MYSQL_DATABASE: restaurant
+      MYSQL_USER: restaurant_user
+      MYSQL_PASSWORD: "123456"
       MYSQL_ROOT_PASSWORD: rootpass
     volumes:
       - dbdata:/var/lib/mysql
+      # optional auto-init folder (recommended)
+      # - ./db-init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -prootpass --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
 volumes:
   dbdata:
