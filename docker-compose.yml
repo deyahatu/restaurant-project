@@ -22,8 +22,7 @@ services:
       MYSQL_ROOT_PASSWORD: rootpass
     volumes:
       - dbdata:/var/lib/mysql
-      # optional auto-init folder (recommended)
-      # - ./db-init:/docker-entrypoint-initdb.d
+   
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -prootpass --silent"]
