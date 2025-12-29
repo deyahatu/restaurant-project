@@ -60,7 +60,7 @@ $conn->close();
         }
 
         .card {
-            background: black;
+            background: red;
             width: 420px;
             padding: 25px;
             border-radius: 15px;
