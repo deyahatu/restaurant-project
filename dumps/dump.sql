@@ -38,7 +38,7 @@ LOCK TABLES `menu` WRITE;
 /*!40000 ALTER TABLE `menu` DISABLE KEYS */;
 INSERT INTO `menu` VALUES
 (1,'pizza','Pizza House'),
-(2,'burger','Burger Town'),
+(2,'burger','malake'),
 (3,'shawarma','Shawarma King'),
 (4,'pasta','Italiano');
 /*!40000 ALTER TABLE `menu` ENABLE KEYS */;
